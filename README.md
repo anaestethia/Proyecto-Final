@@ -23,7 +23,7 @@ La Game Library API es una API para gestionar una biblioteca de videojuegos, per
 
 3. Instala las dependencias:
    ```bash
-   pip install fastapi[all] sqlalchemy passlib python-dotenv python-jose
+   pip install -r requirements.txt
    ```
 
 4. Configura el archivo `.env` con tus credenciales de base de datos.
