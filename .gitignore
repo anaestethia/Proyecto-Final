@@ -1,0 +1,38 @@
+# Entorno virtual
+venv/
+env/
+*.egg-info/
+
+# Archivos de configuración de IDE
+.vscode/
+.idea/
+
+# Archivos de configuración de Python
+__pycache__/
+*.py[cod]
+
+# Archivos de base de datos
+*.db
+*.sqlite3
+
+# Archivos de logs
+*.log
+
+# Archivos de entorno
+.env
+
+# Archivos de caché
+*.cache
+
+# Archivos de compilación
+build/
+dist/
+*.egg
+
+# Archivos de pruebas
+*.cover
+*.coverage
+nosetests.xml
+coverage.xml
+*.hypothesis/
+.pytest_cache/

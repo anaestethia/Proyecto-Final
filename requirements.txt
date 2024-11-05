@@ -1,0 +1,6 @@
+fastapi[all]
+sqlalchemy
+passlib
+python-dotenv
+python-jose
+uvicorn
