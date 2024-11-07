@@ -11,7 +11,7 @@ La Game Library API es una API para gestionar una biblioteca de videojuegos, per
 
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/tu_usuario/game_library_api.git
+   git clone https://github.com/anaestethia/Proyecto-Final.git
    cd game_library_api
    ```
 
