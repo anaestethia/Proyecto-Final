@@ -7,7 +7,7 @@ class ReviewService:
         self.repository = ReviewRepository()
 
     def create_review(self, review: ReviewCreate):
-        review_model = ReviewModel(**review.dict())  # Convertir a modelo de SQLAlchemy
+        review_model = ReviewModel(**review.dict()) 
         return self.repository.create(review_model)
 
     def get_reviews(self, game_id: int):
