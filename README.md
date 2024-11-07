@@ -18,7 +18,7 @@ La Game Library API es una API para gestionar una biblioteca de videojuegos, per
 2. Crea un entorno virtual:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # En Windows usa `venv\Scripts\activate`
+   venv/Scripts/activate  # En Linux usa `source venv/bin/activate`
    ```
 
 3. Instala las dependencias:
