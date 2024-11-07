@@ -1,6 +1,7 @@
 from models.database import SessionLocal
 from models.user_model import User
 from models.favorite_model import Favorite
+from fastapi import HTTPException, status
 
 class UserRepository:
     def __init__(self):
@@ -17,7 +18,7 @@ class UserRepository:
         user = self.db.query(User).filter(User.username == username).first()
         if user and user.verify_password(password):
             return user
-        return None
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Credenciales inválidas")
 
     def get_favorites(self, user_id: int):
         return self.db.query(Favorite).filter(Favorite.user_id == user_id).all()
@@ -34,4 +35,4 @@ class UserRepository:
             self.db.delete(favorite)
             self.db.commit()
             return favorite
-        return None
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Favorito no encontrado")
