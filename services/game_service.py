@@ -1,24 +1,44 @@
-from repositories.game_repository import GameRepository
+from sqlalchemy.orm import Session
 from models.game_model import Game as GameModel
 from models.game_schema import GameCreate
+from fastapi import HTTPException
 
 class GameService:
-    def __init__(self):
-        self.repository = GameRepository()
+    def __init__(self, db: Session):
+        self.db = db
 
     def create_game(self, game: GameCreate):
-        game_model = GameModel(**game.dict())
-        return self.repository.create(game_model)
+        db_game = GameModel(
+            name=game.name,
+            genre=game.genre
+        )
+        self.db.add(db_game)
+        self.db.commit()
+        self.db.refresh(db_game)
+        return db_game
 
     def get_all_games(self):
-        return self.repository.get_all()
+        return self.db.query(GameModel).all()
 
     def get_game(self, game_id: int):
-        return self.repository.get(game_id)
+        return self.db.query(GameModel).filter(GameModel.id == game_id).first()
 
     def update_game(self, game_id: int, game: GameCreate):
-        game_model = GameModel(**game.dict())
-        return self.repository.update(game_id, game_model)
+        db_game = self.db.query(GameModel).filter(GameModel.id == game_id).first()
+        if db_game:
+            db_game.name = game.name
+            db_game.genre = game.genre
+            self.db.commit()
+            self.db.refresh(db_game)
+            return db_game
+        else:
+            raise HTTPException(status_code=404, detail="Juego no encontrado")
 
     def delete_game(self, game_id: int):
-        return self.repository.delete(game_id)
+        db_game = self.db.query(GameModel).filter(GameModel.id == game_id).first()
+        if db_game:
+            self.db.delete(db_game)
+            self.db.commit()
+            return True
+        else:
+            raise HTTPException(status_code=404, detail="Juego no encontrado")
