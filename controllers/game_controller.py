@@ -6,9 +6,12 @@ from sqlalchemy.orm import Session
 import logging
 
 logger = logging.getLogger(__name__)
-router = APIRouter()
+router = APIRouter(
+    prefix="/games",
+    tags=["games"]
+)
 
-@router.post("/games/", response_model=Game, status_code=201)
+@router.post("/", response_model=Game, status_code=201)
 def create_game(game: GameCreate, db: Session = Depends(get_db)):
     try:
         service = GameService(db)
@@ -19,7 +22,7 @@ def create_game(game: GameCreate, db: Session = Depends(get_db)):
         logger.error(f"Error al crear juego: {str(e)}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
-@router.get("/games/", response_model=list[Game])
+@router.get("/", response_model=list[Game])
 def get_games(db: Session = Depends(get_db)):
     try:
         service = GameService(db)
@@ -28,7 +31,7 @@ def get_games(db: Session = Depends(get_db)):
         logger.error(f"Error al obtener juegos: {str(e)}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
-@router.get("/games/{game_id}", response_model=Game)
+@router.get("/{game_id}", response_model=Game)
 def get_game(game_id: int, db: Session = Depends(get_db)):
     try:
         service = GameService(db)
@@ -43,7 +46,7 @@ def get_game(game_id: int, db: Session = Depends(get_db)):
         logger.error(f"Error al obtener juego {game_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
-@router.put("/games/{game_id}", response_model=Game)
+@router.put("/{game_id}", response_model=Game)
 def update_game(game_id: int, game: GameCreate, db: Session = Depends(get_db)):
     try:
         service = GameService(db)
@@ -58,7 +61,7 @@ def update_game(game_id: int, game: GameCreate, db: Session = Depends(get_db)):
         logger.error(f"Error al actualizar juego {game_id}: {str(e)}")
         raise HTTPException(status_code=500, detail="Error interno del servidor")
 
-@router.delete("/games/{game_id}", response_model=Game)
+@router.delete("/{game_id}", response_model=Game)
 def delete_game(game_id: int, db: Session = Depends(get_db)):
     try:
         service = GameService(db)

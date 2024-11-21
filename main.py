@@ -45,7 +45,8 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Configuración de CORS
+app.include_router(game_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
