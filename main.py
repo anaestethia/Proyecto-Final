@@ -1,10 +1,15 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, HTTPException, Depends
 from controllers.game_controller import router as game_router
 from models.database import engine, Base
 from models.game_model import Game
 from sqlalchemy.orm import Session
 from datetime import date
+import logging
+from fastapi.middleware.cors import CORSMiddleware
 
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 Base.metadata.create_all(bind=engine)
 
@@ -25,7 +30,23 @@ def add_initial_data(db: Session):
         db.add_all(initial_games)
         db.commit()
 
+def get_db():
+    db = Session(bind=engine)
+    try:
+        yield db
+    finally:
+        db.close()
+
 app = FastAPI()
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.on_event("startup")
 def startup_event():
@@ -38,3 +59,26 @@ app.include_router(game_router)
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Game Library API"}
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"Request: {request.method} {request.url}")
+    response = await call_next(request)
+    logger.info(f"Response: {response.status_code}")
+    return response
+
+@app.post("/games", status_code=201)
+def create_game(game: Game, db: Session = Depends(get_db)):
+    db.add(game)
+    db.commit()
+    db.refresh(game)
+    logger.info("Juego creado exitosamente.")
+    return game
+
+@app.get("/games/{game_id}", responses={404: {"description": "Juego no encontrado"}})
+def read_game(game_id: int, db: Session = Depends(get_db)):
+    game = db.query(Game).filter(Game.id == game_id).first()
+    if game is None:
+        logger.error(f"Juego con ID {game_id} no encontrado.")
+        raise HTTPException(status_code=404, detail="Juego no encontrado")
+    return game

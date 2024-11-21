@@ -26,7 +26,7 @@ La Game Library API es una API para gestionar una biblioteca de videojuegos, per
    pip install -r requirements.txt
    ```
 
-4. Configura el archivo `.env` con tus credenciales de base de datos.
+4. Configura el archivo `.env` con el archivo `.env.example` cambiando las credenciales por las tuyas
 
 5. Ejecuta la aplicación:
    ```bash
